@@ -1,0 +1,608 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health & Home Predictor</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #243047;
+        }
+
+        header {
+            background: linear-gradient(135deg, #123c69, #087e8b);
+            color: white;
+            padding: 35px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 30px;
+        }
+
+        header p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 18px;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: white;
+            color: #123c69;
+            border: 1px solid #d7e0ec;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px 20px 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(20, 45, 75, 0.08);
+        }
+
+        .card h2 {
+            color: #123c69;
+            margin-top: 0;
+        }
+
+        .description {
+            color: #637083;
+            line-height: 1.6;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #80cbd0;
+            border-color: #087e8b;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 7px;
+            background: #087e8b;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .submit-button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 15px;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #e8f5f3;
+            border: 1px solid #b8e0da;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .result.error {
+            background: #fff0f0;
+            border-color: #f0b8b8;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .notice {
+            font-size: 13px;
+            color: #637083;
+            line-height: 1.6;
+            margin-top: 18px;
+        }
+
+        footer {
+            text-align: center;
+            color: #637083;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 24px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Health & Home Predictor</h1>
+    <p>Simple machine learning predictions to help you explore health risk and house prices.</p>
+</header>
+
+<nav>
+    <button type="button" onclick="showSection('stroke-section')">
+        Stroke Risk Prediction
+    </button>
+    <button type="button" onclick="showSection('house-section')">
+        House Price Estimator
+    </button>
+</nav>
+
+<main class="container">
+
+    <!-- STROKE PREDICTION -->
+    <section class="card" id="stroke-section">
+        <h2>Stroke Risk Prediction</h2>
+        <p class="description">
+            Enter the person's information below to receive a prediction
+            from our machine learning model.
+        </p>
+
+        <form id="stroke-form">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="gender">Gender</label>
+                    <select id="gender" required>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="age">Age (years)</label>
+                    <input id="age" type="number" min="0" max="120"
+                           value="45" required>
+                </div>
+
+                <div class="field">
+                    <label for="hypertension">Has hypertension?</label>
+                    <select id="hypertension" required>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="heart_disease">Has heart disease?</label>
+                    <select id="heart_disease" required>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="ever_married">Ever married?</label>
+                    <select id="ever_married" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="work_type">Work type</label>
+                    <select id="work_type" required>
+                        <option value="Private">Private</option>
+                        <option value="Self-employed">Self-employed</option>
+                        <option value="Govt_job">Government job</option>
+                        <option value="children">Child / not working age</option>
+                        <option value="Never_worked">Never worked</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="Residence_type">Residence type</label>
+                    <select id="Residence_type" required>
+                        <option value="Urban">Urban</option>
+                        <option value="Rural">Rural</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="avg_glucose_level">Average glucose level</label>
+                    <input id="avg_glucose_level" type="number"
+                           min="0" step="any" value="100" required>
+                </div>
+
+                <div class="field">
+                    <label for="bmi">BMI</label>
+                    <input id="bmi" type="number" min="0"
+                           step="any" value="25" required>
+                </div>
+
+                <div class="field">
+                    <label for="smoking_status">Smoking status</label>
+                    <select id="smoking_status" required>
+                        <option value="never smoked">Never smoked</option>
+                        <option value="formerly smoked">Formerly smoked</option>
+                        <option value="smokes">Currently smokes</option>
+                        <option value="Unknown">Unknown</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button class="submit-button" type="submit">
+                Predict Stroke Risk
+            </button>
+        </form>
+
+        <div id="stroke-result" class="result" role="status"
+             aria-live="polite"></div>
+
+        <p class="notice">
+            Important: This is an educational machine learning prediction,
+            not a medical diagnosis. It cannot confirm or rule out a stroke.
+            For health concerns, consult a qualified healthcare professional.
+        </p>
+    </section>
+
+    <!-- HOUSE PRICE PREDICTION -->
+    <section class="card hidden" id="house-section">
+        <h2>House Price Estimator</h2>
+        <p class="description">
+            Enter the property details to estimate its price using our
+            trained house price model.
+        </p>
+
+        <form id="house-form">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="bedrooms">Bedrooms</label>
+                    <input id="bedrooms" type="number" min="0"
+                           value="3" required>
+                </div>
+
+                <div class="field">
+                    <label for="bathrooms">Bathrooms</label>
+                    <input id="bathrooms" type="number" min="0"
+                           step="0.25" value="2" required>
+                </div>
+
+                <div class="field">
+                    <label for="sqft_living">Living area (sq ft)</label>
+                    <input id="sqft_living" type="number" min="1"
+                           value="1800" required>
+                </div>
+
+                <div class="field">
+                    <label for="sqft_lot">Lot area (sq ft)</label>
+                    <input id="sqft_lot" type="number" min="1"
+                           value="5000" required>
+                </div>
+
+                <div class="field">
+                    <label for="floors">Number of floors</label>
+                    <input id="floors" type="number" min="1"
+                           step="0.5" value="1" required>
+                </div>
+
+                <div class="field">
+                    <label for="waterfront">Waterfront property?</label>
+                    <select id="waterfront" required>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="view">View quality (0–4)</label>
+                    <select id="view" required>
+                        <option value="0">0 - No view</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4 - Best view</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="condition">House condition (1–5)</label>
+                    <select id="condition" required>
+                        <option value="1">1 - Poor</option>
+                        <option value="2">2</option>
+                        <option value="3" selected>3 - Average</option>
+                        <option value="4">4</option>
+                        <option value="5">5 - Excellent</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="grade">Construction grade (1–13)</label>
+                    <input id="grade" type="number" min="1" max="13"
+                           value="7" required>
+                </div>
+
+                <div class="field">
+                    <label for="sqft_above">Area above ground (sq ft)</label>
+                    <input id="sqft_above" type="number" min="0"
+                           value="1400" required>
+                </div>
+
+                <div class="field">
+                    <label for="sqft_basement">Basement area (sq ft)</label>
+                    <input id="sqft_basement" type="number" min="0"
+                           value="400" required>
+                </div>
+
+                <div class="field">
+                    <label for="yr_built">Year built</label>
+                    <input id="yr_built" type="number" min="1800"
+                           max="2100" value="2000" required>
+                </div>
+
+                <div class="field">
+                    <label for="yr_renovated">Year renovated (0 if never)</label>
+                    <input id="yr_renovated" type="number" min="0"
+                           max="2100" value="0" required>
+                </div>
+
+                <div class="field">
+                    <label for="zipcode">Property ZIP code</label>
+                    <input id="zipcode" type="number" min="0"
+                           value="98001" required>
+                </div>
+
+                <div class="field">
+                    <label for="lat">Latitude</label>
+                    <input id="lat" type="number" step="any"
+                           value="47.5" required>
+                </div>
+
+                <div class="field">
+                    <label for="long">Longitude</label>
+                    <input id="long" type="number" step="any"
+                           value="-122.2" required>
+                </div>
+
+                <div class="field">
+                    <label for="sqft_living15">Average nearby living area (sq ft)</label>
+                    <input id="sqft_living15" type="number" min="0"
+                           value="1800" required>
+                </div>
+
+                <div class="field">
+                    <label for="sqft_lot15">Average nearby lot area (sq ft)</label>
+                    <input id="sqft_lot15" type="number" min="0"
+                           value="5000" required>
+                </div>
+
+                <div class="field">
+                    <label for="house_date">Sale date</label>
+                    <input id="house_date" type="date"
+                           value="2014-10-13" required>
+                </div>
+
+            </div>
+
+            <button class="submit-button" type="submit">
+                Estimate House Price
+            </button>
+        </form>
+
+        <div id="house-result" class="result" role="status"
+             aria-live="polite"></div>
+
+        <p class="notice">
+            This estimate uses a model trained on a historical housing
+            dataset. The dataset uses US properties and prices in US dollars;
+            results may not reflect current market prices or other countries.
+        </p>
+    </section>
+
+</main>
+
+<footer>
+    Machine Learning Project | Classification and Regression
+</footer>
+
+<script>
+    function showSection(sectionId) {
+        document.getElementById("stroke-section").classList.add("hidden");
+        document.getElementById("house-section").classList.add("hidden");
+        document.getElementById(sectionId).classList.remove("hidden");
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function displayResult(elementId, message, isError = false) {
+        const box = document.getElementById(elementId);
+        box.textContent = message;
+        box.classList.remove("hidden");
+        box.style.display = "block";
+        box.classList.toggle("error", isError);
+    }
+
+    document.getElementById("stroke-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const resultBox = document.getElementById("stroke-result");
+        resultBox.style.display = "block";
+        resultBox.classList.remove("error");
+        resultBox.textContent = "Making prediction...";
+
+        const data = {
+            gender: document.getElementById("gender").value,
+            age: Number(document.getElementById("age").value),
+            hypertension: Number(document.getElementById("hypertension").value),
+            heart_disease: Number(document.getElementById("heart_disease").value),
+            ever_married: document.getElementById("ever_married").value,
+            work_type: document.getElementById("work_type").value,
+            Residence_type: document.getElementById("Residence_type").value,
+            avg_glucose_level: Number(document.getElementById("avg_glucose_level").value),
+            bmi: Number(document.getElementById("bmi").value),
+            smoking_status: document.getElementById("smoking_status").value
+        };
+
+        try {
+            const response = await fetch("/predict/stroke", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error("The server could not process this prediction. Check app.py and the server terminal.");
+            }
+
+            const result = await response.json();
+
+            if (Number(result.prediction) === 1) {
+                displayResult(
+                    "stroke-result",
+                    "The model predicted a stroke outcome for these inputs. This is not a diagnosis. Please consult a healthcare professional for medical advice."
+                );
+            } else {
+                displayResult(
+                    "stroke-result",
+                    "The model did not predict a stroke outcome for these inputs. This does not guarantee that the person is free from stroke risk."
+                );
+            }
+        } catch (error) {
+            displayResult(
+                "stroke-result",
+                "Could not connect to the prediction server. Open this page through http://127.0.0.1:8000 and check that Uvicorn is running. Details: " + error.message,
+                true
+            );
+        }
+    });
+
+    document.getElementById("house-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const resultBox = document.getElementById("house-result");
+        resultBox.style.display = "block";
+        resultBox.classList.remove("error");
+        resultBox.textContent = "Estimating price...";
+
+        const saleDate = document.getElementById("house_date").value;
+        const compactDate = saleDate.replaceAll("-", "") + "T000000";
+
+        const data = {
+            date: compactDate,
+            bedrooms: Number(document.getElementById("bedrooms").value),
+            bathrooms: Number(document.getElementById("bathrooms").value),
+            sqft_living: Number(document.getElementById("sqft_living").value),
+            sqft_lot: Number(document.getElementById("sqft_lot").value),
+            floors: Number(document.getElementById("floors").value),
+            waterfront: Number(document.getElementById("waterfront").value),
+            view: Number(document.getElementById("view").value),
+            condition: Number(document.getElementById("condition").value),
+            grade: Number(document.getElementById("grade").value),
+            sqft_above: Number(document.getElementById("sqft_above").value),
+            sqft_basement: Number(document.getElementById("sqft_basement").value),
+            yr_built: Number(document.getElementById("yr_built").value),
+            yr_renovated: Number(document.getElementById("yr_renovated").value),
+            zipcode: Number(document.getElementById("zipcode").value),
+            lat: Number(document.getElementById("lat").value),
+            long: Number(document.getElementById("long").value),
+            sqft_living15: Number(document.getElementById("sqft_living15").value),
+            sqft_lot15: Number(document.getElementById("sqft_lot15").value)
+        };
+
+        try {
+            const response = await fetch("/predict/house", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error("The server could not process this estimate. Check app.py and the server terminal.");
+            }
+
+            const result = await response.json();
+
+            if (typeof result.predicted_price !== "number" ||
+                !Number.isFinite(result.predicted_price)) {
+                throw new Error("The server returned an unexpected price result.");
+            }
+
+            const formattedPrice = new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+                maximumFractionDigits: 0
+            }).format(result.predicted_price);
+
+            displayResult(
+                "house-result",
+                "Estimated house price: " + formattedPrice +
+                ". This is a model estimate, not a guaranteed market value."
+            );
+        } catch (error) {
+            displayResult(
+                "house-result",
+                "Could not connect to the prediction server. Open this page through http://127.0.0.1:8000 and check that Uvicorn is running. Details: " + error.message,
+                true
+            );
+        }
+    });
+</script>
+
+</body>
+</html>
